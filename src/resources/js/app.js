@@ -12,7 +12,6 @@ btnToggleSidebar.addEventListener("click", e => {
 
 document.addEventListener('click', e => {
     if(htmlExpanded.classList.contains("layout__expanded")) {
-        console.log('click');
         if (!left_sidebar.contains(e.target) && !btnToggleSidebar.contains(e.target)) {
             htmlExpanded.classList.remove("layout__expanded")
         };
