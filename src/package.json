@@ -1,0 +1,19 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "axios": "^1.1.2",
+        "laravel-datatables-vite": "^0.5.2",
+        "laravel-vite-plugin": "^0.7.2",
+        "sass": "^1.77.6",
+        "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@ckeditor/ckeditor5-build-classic": "^43.0.0",
+        "datatables.net-bs5": "^2.0.8",
+        "jquery": "^3.7.1"
+    }
+}
