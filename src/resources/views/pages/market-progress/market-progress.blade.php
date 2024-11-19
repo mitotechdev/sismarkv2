@@ -15,6 +15,7 @@
         </div>
         @endif
 
+        @can('create-market-progress')
         <div class="card mb-3">
             <form action="{{ route('market-progress.store') }}" method="POST" class="needs-validation form-create" novalidate>
                 @csrf
@@ -41,6 +42,7 @@
                 </div>
             </form>
         </div>
+        @endcan
 
         <div class="card">
             <div class="card-header">Data Market Progress</div>
@@ -61,10 +63,14 @@
                                 <td>{{ $data->name }}</td>
                                 <td>{{ $data->status }}</td>
                                 <td>
+                                    @canany(['edit-market-progress', 'delete-market-progress'])
                                     <div class="d-flex align-items-center gap-2">
+                                        @can('edit-market-progress')
                                         <a href="{{ route('market-progress.edit', $data->id) }}" class="btn btn-sm btn-outline-warning">
                                             <i class="bx bxs-edit"></i>
                                         </a>
+                                        @endcan
+                                        @can('delete-market-progress')
                                         <form action="{{ route('market-progress.destroy', $data->id) }}" method="POST" id="deleteMarketProgress-{{ $data->id }}">
                                             @csrf
                                             @method('DELETE')
@@ -72,7 +78,9 @@
                                                 <i class="bx bx-trash-alt"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
+                                    @endcanany
                                 </td>
                             </tr>
                         @endforeach

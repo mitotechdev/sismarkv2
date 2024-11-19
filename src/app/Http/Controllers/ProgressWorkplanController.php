@@ -10,6 +10,12 @@ use App\Models\ProgressWorkplan;
 
 class ProgressWorkplanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:create-progress', ['only' => ['store']]);
+        $this->middleware('permission:edit-progress', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:delete-progress', ['only' => ['destroy']]);
+    }
     
     public function index()
     {
@@ -63,15 +69,20 @@ class ProgressWorkplanController extends Controller
         return redirect()->back()->with('success', 'Progress workplan telah ditambahkan!');
     }
     
-    public function show(string $id)
-    {
-        //
-    }
-    
     public function edit(ProgressWorkplan $progressWorkplan)
     {
-        $marketProgress = MarketProgress::get();
-        return view('pages.workplan.progress.progress-edit', compact('progressWorkplan','marketProgress'));
+        $metadata = [
+            'title' => 'Edit Progress Kerja',
+            'description' => 'Marketing',
+            'submenu' => 'realisasi-kerja',
+        ];
+
+        if(auth()->user()->id == $progressWorkplan->user_id && auth()->user()->can('edit-progress')) {
+            $marketProgress = MarketProgress::get();
+            return view('pages.workplan.progress.progress-edit', compact('progressWorkplan','marketProgress', 'metadata'));
+        } else {
+            abort(403);
+        }
     }
     
     public function update(Request $request, ProgressWorkplan $progressWorkplan)

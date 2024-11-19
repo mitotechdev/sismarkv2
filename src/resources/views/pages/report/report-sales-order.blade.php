@@ -4,26 +4,9 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Report PO</li>
+                <li class="breadcrumb-item active" aria-current="page">List Orders</li>
             </ol>
         </nav>
-
-        <div class="d-flex gap-3 mb-3">
-            <div class="col-md-5 bg-white p-4 shadow-sm rounded mb-3">
-                <div class="row">
-                    <div class="h6 fw-bold mb-0 text-muted">Total Revenue PO</div>
-                    <div class="form-text" style="font-size: 11px">Berdasarkan akumulasi purchase order yang <strong class="text-success">Approved</strong></div>
-                    <div class="h3 fw-bold mt-3">{{ 'Rp ' . number_format($totalRevenueOrders, "2", ",", ".") }}</div>
-                </div>
-            </div>
-            <div class="col-md-5 bg-white p-4 shadow-sm rounded mb-3">
-                <div class="row">
-                    <div class="h6 fw-bold mb-0 text-muted">Total PO In</div>
-                    <div class="form-text" style="font-size: 11px">Berdasarkan akumulasi purchase order yang <strong class="text-success">Approved</strong></div>
-                    <div class="h3 fw-bold mt-3">{{ number_format($salesOrder->count(), "0", ",", ".") }} Data</div>
-                </div>
-            </div>
-        </div>
 
         <div class="card">
             <div class="card-header">Data Purchase Order</div>
@@ -40,7 +23,7 @@
             $('#datatable_sismark').DataTable({
                 responsive: true,
                 serverSide: true,
-                ajax: "{{ route('report.purchase.order') }}",
+                ajax: "{{ route('report.list.purchase.order') }}",
                 columns: [
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', title: 'No', orderable: false, searchable: false },
                     { data: 'code', name: 'code', title: 'ID', orderable: true },

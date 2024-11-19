@@ -42,7 +42,17 @@ Route::get('sales-order', function() {
 });
 
 Route::get('sales-api', function() {
-    $data = SalesOrder::with('sales_order_items', 'segmen')->limit(4)->get();
+    $data = SalesOrder::with('sales_order_items', 'segmen')->get();
 
     return response()->json($data);
 });
+
+
+Route::get('sales-order/{id}', function($id) {
+    $data = SalesOrder::with('sales_order_items.product', 'customer.category_customer', 'tax', 'recap_invoice')
+        ->find($id);
+    return response()->json($data);
+});
+
+
+

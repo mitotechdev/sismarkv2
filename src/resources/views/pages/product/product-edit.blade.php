@@ -16,39 +16,51 @@
                 <div class="card-header fw-bold">Produk Baru</div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="code_product" class="form-label">Kode Produk</label>
-                                <input type="text" class="form-control" id="code_product" name="code" autocomplete="off" spellcheck="false" title="Kode produk" value="{{ $product->code }}" placeholder="MEICHEMSC01" required>
+                                <input type="text" class="form-control" id="code_product" name="code" autocomplete="off" spellcheck="false" title="Kode produk" placeholder="MEICHEMSC01" value="{{ $product->code }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="name_product" class="form-label">Nama Produk</label>
+                                <input type="text" class="form-control" name="name_product" id="name_product" title="Nama Produk" value="{{ $product->name }}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="type_of_product" class="form-label">Jenis Produk</label>
+                                <select name="type_of_product" id="type_of_product" class="form-select select-box" title="Kategori produk" required>
+                                    <option value="" selected>Pilih jenis produk...</option>
+                                    @foreach ($typeProducts as $typeProduct)
+                                        <option value="{{ $typeProduct->id }}" {{ $product->type_product_id == $typeProduct->id ? "selected" : "" }}>{{ $typeProduct->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="mb-3">
-                                <label for="name_product" class="form-label">Nama Produk</label>
-                                <input type="text" class="form-control" id="name_product" name="name" autocomplete="off" spellcheck="false" title="Nama produk" value="{{ $product->name }}" placeholder="Alkalinity Booster" required>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="packaging" class="form-label">Kemasan</label>
                                 <input type="text" class="form-control" id="packaging" name="packaging" autocomplete="off" spellcheck="false" title="Kemasan" value="{{ $product->packaging }}" placeholder="30 Kg/Pail" required>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="unit" class="form-label">Satuan</label>
                                 <input type="text" class="form-control" id="unit" name="unit" autocomplete="off" spellcheck="false" title="Satuan" value="{{ $product->unit }}" placeholder="Kg" required>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="mb-3">
                                 <label for="category" class="form-label">Kategori</label>
-                                <select name="category" class="form-select" id="category" title="Kategori" required>
+                                <select name="category" class="form-select select-box" id="category" title="Kategori" required>
                                     <option value="">Pilih kategori...</option>
-                                    <option value="General Chemical" {{ $product->category == "General Chemical" ? "selected" : "" }}>General Chemical</option>
-                                    <option value="Specialty Chemical" {{ $product->category == "Specialty Chemical" ? "selected" : "" }}>Specialty Chemical</option>
+                                    @foreach ($categoryProducts as $category)
+                                        <option value="{{ $category->id }}" {{ $product->category_product_id == $category->id ? "selected" : "" }}>{{ $category->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -62,3 +74,20 @@
 
     </section>
 @endsection
+
+@push('scripts')
+    <script>
+        const config = {
+                    search: true,
+                    creatable: false,
+                    clearable: true,
+                    size: '',
+                }
+        let selectBox = document.querySelectorAll('.select-box');
+        selectBox.forEach(element => {
+            if (element && element.tagName === 'SELECT') {
+                dselect(element, config);
+            } 
+        });
+    </script>
+@endpush

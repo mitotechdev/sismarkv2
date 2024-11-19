@@ -5,7 +5,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('sales-order.index') }}">Purchase Order</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Detail</li>
+                <li class="breadcrumb-item active" aria-current="page">Edit</li>
             </ol>
         </nav>
 
@@ -59,12 +59,6 @@
                                         <option value="{{ $tax->id }}" {{ $salesOrder->tax_id == $tax->id ? "selected" : "" }}>{{ $tax->name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="top" class="form-label">Term of Payment (TOP)</label>
-                                <input type="date" class="form-control" name="top" id="top" title="Term of Payment" value="{{ $salesOrder->term_of_payment->format('Y-m-d') }}" required>
                             </div>
                         </div>
                     </div>

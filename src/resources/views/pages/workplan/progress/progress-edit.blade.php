@@ -4,14 +4,14 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{ route('workplan.index') }}">Workplan</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('workplan.index') }}">Realisasi Kerja</a></li>
               <li class="breadcrumb-item"><a href="{{ route('workplan.edit', $progressWorkplan->workplan_id) }}">Progress</a></li>
               <li class="breadcrumb-item active" aria-current="page">Edit</li>
             </ol>
         </nav>
     </section>
 
-    <form action="{{ route('progress.update', $progressWorkplan->id) }}" method="POST" class="needs-validation" id="editProgress-{{$progressWorkplan->id}}" novalidate>
+    <form action="{{ route('progress-workplan.update', $progressWorkplan->id) }}" method="POST" class="needs-validation" id="editProgress-{{$progressWorkplan->id}}" novalidate>
         @csrf
         @method('PUT')
         <div class="card mb-3">

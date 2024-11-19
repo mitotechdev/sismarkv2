@@ -14,6 +14,7 @@
             </div>
         @endif
 
+        @can('create-realisasi-kerja')
         <form action="{{ route('workplan.store') }}" class="needs-validation form-create" method="POST" novalidate>
             @csrf
             @method('POST')
@@ -45,17 +46,6 @@
                                 <input type="text" class="form-control" id="status_customer" title="Status Customer" readonly disabled>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                <label for="sales" class="form-label">Sales / Marketing</label>
-                                <select name="sales" id="sales" class="form-select select-box" required>
-                                    <option value="" selected>Pilih sales...</option>
-                                    @foreach ($sales as $data)
-                                        <option value="{{ $data->id }}">{{ $data->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -63,6 +53,7 @@
                 </div>
             </div>
         </form>
+        @endcan
     
         <div class="card shadow-sm">
             <div class="card-header fw-bold">Data Realisasi Kerja</div>

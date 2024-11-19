@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Marketing</title>
+    <title>{{ $metadata['title'] }}</title>
     <meta name="description" content="Perusahaan distributor dan bahan kimia">
     <meta name="keywords" content="chemical, pome, mechanical">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
@@ -30,180 +30,196 @@
             <!-- Navbar sidebar main -->
             <ul class="sidebar_nav">
                 <li class="sidebar_item">
-                    <a class="nav__link" href="{{ route('home') }}">
+                    <a class="nav__link {{ $metadata['description'] == 'Dashboard' ? 'actived' : '' }}" href="{{ route('home') }}">
                         <i class='bx bxs-dashboard icon_nav'></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
 
+                @canany(['read-type-product','read-category-product','read-segment-customer','read-tax', 'read-market-progress'])
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#dataMaster" aria-expanded="false" aria-controls="dataMaster">
+                    <a class="nav__link {{ $metadata['description'] == 'Data Management' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#dateManagement" aria-expanded="false" aria-controls="dateManagement">
+                        <i class='bx bxs-data icon_nav'></i>
+                        <span>Data Management</span>
+                    </a>
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Data Management' ? 'show' : '' }}" id="dateManagement" data-bs-parent="#left_sidebar">
+                        @can('read-type-product')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'type-product' ? 'actived' : '' }}" href="{{ route('type-product.index') }}">Jenis Produk</a>
+                        </li>
+                        @endcan
+
+                        @can('read-category-product')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'category-product' ? 'actived' : '' }}" href="{{ route('category-product.index') }}">Kategori Produk</a>
+                        </li>
+                        @endcan
+                        @can('read-segment-customer')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'segment-customer' ? 'actived' : '' }}" href="{{ route('category-customer.index') }}">Segmen Customer</a>
+                        </li>
+                        @endcan
+                        @can('read-tax')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'taxes' ? 'actived' : '' }}" href="{{ route('tax.index') }}">Pajak</a>
+                        </li>
+                        @endcan
+                        @can('read-market-progress')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'market-progress' ? 'actived' : '' }}" href="{{ route('market-progress.index') }}">Market Progress</a>
+                        </li>
+                        @endcan
+                    </ul>
+                </li>
+                @endcanany
+
+                @canany(['read-product','read-branch','read-customer'])
+                <li class="sidebar_item">
+                    <a class="nav__link {{ $metadata['description'] == 'Data Master' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#dataMaster" aria-expanded="false" aria-controls="dataMaster">
                         <i class='bx bxs-data icon_nav'></i>
                         <span>Data Master</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="dataMaster" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Data Master' ? 'show' : '' }}" id="dataMaster" data-bs-parent="#left_sidebar">
+                        @can('read-product')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('product.index') }}">Produk</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'product' ? 'actived' : '' }}" href="{{ route('product.index') }}">Products</a>
                         </li>
+                        @endcan
+                        @can('read-branch')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('branches.index') }}">Branches</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'branches' ? 'actived' : '' }}" href="{{ route('branches.index') }}">Branches</a>
                         </li>
+                        @endcan
+                        @can('read-customer')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('customer.index') }}">Customer</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'customers' ? 'actived' : '' }}" href="{{ route('customer.index') }}">Customers</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
 
-                {{-- <li class="sidebar_item">
-                    <a class="nav__link actived" href="#" data-bs-toggle="collapse" data-bs-target="#analyticsBar" aria-expanded="true" aria-controls="analyticsBar">
-                        <i class='bx bxs-color icon_nav'></i>
-                        <span>Analytics</span>
-                    </a>
-                    <ul class="sidebar_dropdown collapse show" id="analyticsBar" data-bs-parent="#left_sidebar">
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="#">Profitable</a>
-                        </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link actived" href="#">Loss</a>
-                        </li>
-                    </ul>
-                </li> --}}
-
+                @canany(['read-realisasi-kerja'])
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#worksheet" aria-expanded="false" aria-controls="worksheet">
+                    <a class="nav__link {{ $metadata['description'] == 'Marketing' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#worksheet" aria-expanded="false" aria-controls="worksheet">
                         <i class='bx bxs-folder icon_nav'></i>
                         <span>Marketing</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="worksheet" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Marketing' ? 'show' : '' }}" id="worksheet" data-bs-parent="#left_sidebar">
+                        @can('read-realisasi-kerja')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('workplan.index') }}">Realisasi Kerja</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'realisasi-kerja' ? 'actived' : '' }}" href="{{ route('workplan.index') }}">Realisasi Kerja</a>
                         </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
 
+                @canany(['read-purchase-order','read-recap-invoice'])
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="false" aria-controls="sales">
+                    <a class="nav__link {{ $metadata['description'] == 'Sales' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="false" aria-controls="sales">
                         <i class='bx bxs-dollar-circle icon_nav'></i>
                         <span>Sales</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="sales" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Sales' ? 'show' : '' }}" id="sales" data-bs-parent="#left_sidebar">
+                        @can('read-purchase-order')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('sales-order.index') }}">Purchase Order</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'purchase-order' ? 'actived' : '' }}" href="{{ route('sales-order.index') }}">Purchase Order</a>
                         </li>
+                        @endcan
+                        @can('read-recap-invoice')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'recap-invoice' ? 'actived' : '' }}" href="{{ route('recap-invoice.index') }}">Rekap Invoice</a>
+                        </li>
+                        @endcan
                     </ul>
                 </li>
-
-                {{-- <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#finance" aria-expanded="false" aria-controls="finance">
-                        <i class='bx bxs-wallet icon_nav'></i>
-                        <span>Finance</span>
-                    </a>
-                    <ul class="sidebar_dropdown collapse" id="finance" data-bs-parent="#left_sidebar">
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('sales.order.outstanding') }}">Outstanding</a>
-                        </li>
-                    </ul>
-                </li> --}}
+                @endcanany
 
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
-                        <i class='bx bx-folder icon_nav'></i>
+                    <a class="nav__link {{ $metadata['description'] == 'Reports' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#reports" aria-expanded="false" aria-controls="reports">
+                        <i class='bx bxs-cabinet icon_nav'></i>
                         <span>Reports</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="reports" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Reports' ? 'show' : '' }}" id="reports" data-bs-parent="#left_sidebar">
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('report.sales') }}">Sales</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'recap-progress' ? 'actived' : '' }}" href="{{ route('report.progress') }}">Rekap Progress</a>
                         </li>
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('report.progress') }}">Rekap Progress</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'report-purchase-order' ? 'actived' : '' }}" href="{{ route('report.purchase.order') }}">Rekap PO</a>
                         </li>
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('report.purchase.order') }}">Purchase Order</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'list-purchase-order' ? 'actived' : '' }}" href="{{ route('report.list.purchase.order') }}">List Orders</a>
                         </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="#">Realisasi Kerja</a>
-                        </li>
-                        
                     </ul>
                 </li>
 
+                @canany(['pull-report-progress','pull-report-po','pull-report-payment'])
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#downloads" aria-expanded="false" aria-controls="downloads">
+                    <a class="nav__link {{ $metadata['description'] == 'Download' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#downloads" aria-expanded="false" aria-controls="downloads">
                         <i class='bx bxs-cloud-download icon_nav'></i>
                         <span>Downloads</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="downloads" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Download' ? 'show' : '' }}" id="downloads" data-bs-parent="#left_sidebar">
+                        @can('pull-report-progress')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('print.recap.progress') }}">Recap Progress</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'download-progress' ? 'actived' : '' }}" href="{{ route('print.recap.progress') }}">Recap Progress</a>
                         </li>
+                        @endcan
+                        @can('pull-report-po')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('download.purchase.order') }}">Purchase Orders</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'download-purchase-order' ? 'actived' : '' }}" href="{{ route('download.purchase.order') }}">Purchase Orders</a>
                         </li>
-                        {{-- <li class="sidebar_item">
-                            <a class="nav_link" href="#">Customers</a>
-                        </li> --}}
+                        @endcan
+                        @can('pull-report-payment')
+                        <li class="sidebar_item">
+                            <a class="nav_link {{ $metadata['submenu'] == 'download-payment' ? 'actived' : '' }}" href="{{ route('download.payment') }}">Payments</a>
+                        </li>
+                        @endcan
                     </ul>
                 </li>
+                @endcanany
 
+                @if(auth()->user()->can('read-user') || auth()->user()->hasRole('Super Admin'))
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
+                    <a class="nav__link {{ $metadata['description'] == 'Auth' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
                         <i class='bx bx-shield-quarter icon_nav'></i>
                         <span>Auth</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="auth" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Auth' ? 'show' : '' }}" id="auth" data-bs-parent="#left_sidebar">
+                        @can('read-user')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('user.index') }}">User</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'users' ? 'actived' : '' }}" href="{{ route('user.index') }}">User</a>
                         </li>
+                        @endcan
+                        @role('Super Admin')
                         <li class="sidebar_item">
-                            <a class="nav_link" href="#">Register</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'roles' ? 'actived' : '' }}" href="{{ route('roles.index') }}">Role & Permission</a>
                         </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="#">Role & Permission</a>
-                        </li>
+                        @endrole
                     </ul>
                 </li>
+                @endif
 
+                @role('Super Admin')
                 <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#configuration" aria-expanded="false" aria-controls="configuration">
-                        <i class='bx bxs-wrench icon_nav'></i>
-                        <span>Configuration</span>
-                    </a>
-                    <ul class="sidebar_dropdown collapse" id="configuration" data-bs-parent="#left_sidebar">
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('approval.index') }}">Approval</a>
-                        </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('tax.index') }}">Tax</a>
-                        </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('category-customer.index') }}">Segmen</a>
-                        </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('market-progress.index') }}">Market Progress</a>
-                        </li>
-                        <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('type-customer.index') }}">Type Customer</a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="sidebar_item">
-                    <a class="nav__link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#trash" aria-expanded="false" aria-controls="trash">
-                        <i class='bx bxs-trash  icon_nav'></i>
+                    <a class="nav__link {{ $metadata['description'] == 'Trash' ? 'actived' : 'collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#trash" aria-expanded="false" aria-controls="trash">
+                        <i class='bx bxs-trash icon_nav'></i>
                         <span>Trash</span>
                     </a>
-                    <ul class="sidebar_dropdown collapse" id="trash" data-bs-parent="#left_sidebar">
+                    <ul class="sidebar_dropdown collapse {{ $metadata['description'] == 'Trash' ? 'show' : '' }}" id="trash" data-bs-parent="#left_sidebar">
                         <li class="sidebar_item">
-                            <a class="nav_link" href="{{ route('trash.branch') }}">Branches</a>
+                            <a class="nav_link {{ $metadata['submenu'] == 'trash' ? 'actived' : '' }}" href="{{ route('trash.branch') }}">Branches</a>
                         </li>
                     </ul>
                 </li>
+                @endrole
 
             </ul>
             <!-- Navbar sidebar footer -->
             <ul class="sidebar_footer px-3">
                 <li class="sidebar_item">
-                    <a class="nav__link" href="#">
+                    <a class="nav__link {{ $metadata['submenu'] == 'pengaturan' ? 'actived' : '' }}" href="{{ route('pengaturan.index') }}">
                         <i class='bx bxs-cog icon_nav'></i>
                         <span>Pengaturan</span>
                     </a>
@@ -214,7 +230,7 @@
                         @method('POST')
                         <button class="btn nav__link w-100" type="button" onclick="logOut('logout-sidebar')">
                             <i class='bx bx-log-out-circle icon_nav'></i>
-                            <span>Log out</span>
+                            <span>Keluar</span>
                         </button>
                     </form>
                 </li>
@@ -254,24 +270,18 @@
 
                                 <ul class="wrap__dropdown_items">
                                     <li>
-                                        <a class="dropdown__item" href="#">
+                                        <a class="dropdown__item" href="{{ route('pengaturan.index') }}">
                                             <i class='bx bxs-cog icon_dropdown'></i>
                                             <span>Pengaturan</span>
                                         </a>
                                     </li>
-                                    {{-- <li>
-                                        <a class="dropdown__item" href="#">
-                                            <i class='bx bxs-help-circle icon_dropdown'></i>
-                                            <span>Bantuan</span>
-                                        </a>
-                                    </li> --}}
                                     <li>
-                                        <form action="{{ route('logout') }}" method="POST" id="logout-navbar">
+                                        <form action="{{ route('logout') }}" method="POST" id="logout-navbar" class="w-100">
                                             @csrf
                                             @method('POST')
-                                            <button class="btn dropdown__item" type="button" onclick="logOut('logout-navbar')">
+                                            <button class="btn dropdown__item w-100" type="button" onclick="logOut('logout-navbar')">
                                                 <i class='bx bxs-log-in-circle bx-rotate-180 icon_dropdown'></i>
-                                                <span>Log Out</span>
+                                                <span>Keluar</span>
                                             </button>
                                         </form>
                                     </li>

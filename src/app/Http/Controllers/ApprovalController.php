@@ -9,9 +9,11 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ApprovalController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('role:Super Admin', ['only' => ['index', 'store', 'show', 'update', 'destroy']]);
+    }
+    
     public function index()
     {
         if( request()->ajax() ) {
@@ -26,18 +28,12 @@ class ApprovalController extends Controller
 
         return view('pages.approval');
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         Approval::create([
@@ -48,26 +44,17 @@ class ApprovalController extends Controller
 
         return redirect()->back()->with('success', "$request->name");
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(Approval $approval)
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(Approval $approval)
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, Approval $approval)
     {
         $validator = Validator::make($request->all(), [
@@ -87,10 +74,7 @@ class ApprovalController extends Controller
             return redirect()->back()->with('updated', "$request->name");
         }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(Approval $approval)
     {
         return redirect()->back()->with('denied', 'Anda tidak dapat melakukan penghapusan data ini. Sistem dapat malfungsi jika anda melanjutkan eksekusi ini, yang menggangu relasi database.');

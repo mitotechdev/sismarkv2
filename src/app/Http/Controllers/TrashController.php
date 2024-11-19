@@ -8,8 +8,18 @@ use Illuminate\Http\Request;
 
 class TrashController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('role:Super Admin', ['only' => ['branch', 'recoveryBranch', 'deletePermanentlyBranch']]);
+    }
     public function branch()
     {
+        $metadata = [
+            'title' => 'Trash Branch',
+            'description' => 'Trash',
+            'submenu' => 'trash',
+        ];
         $data = Branch::onlyTrashed()->get();
         if (request()->ajax()) {
             return Datatables::of($data)
@@ -20,7 +30,7 @@ class TrashController extends Controller
                 ->rawColumns(['aksi'])
                 ->toJson();
         }
-        return view('trashes.branch');
+        return view('trashes.branch', compact('metadata'));
     }
 
     public function recoveryBranch($id)

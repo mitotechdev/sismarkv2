@@ -32,6 +32,7 @@
                     { data: 'sales', name: 'sales', title: 'Sales', orderable: true, searchable: true },
                     { data: 'customer_name', name: 'customer_name', title: 'Customer', orderable: true, searchable: true },
                     { data: 'market_progress', name: 'market_progress', title: 'Market Progress', orderable: true, searchable: true },
+                    { data: 'status_progress', name: 'status_progress', title: 'Status', orderable: true, searchable: true },
                     { data: 'issue', name: 'issue', title: 'Deksripsi', orderable: true, searchable: true },
                     { data: 'next_action', name: 'next_action', title: 'Next Action', orderable: true, searchable: true }
                 ],

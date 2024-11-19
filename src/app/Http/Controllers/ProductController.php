@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryProduct;
 use App\Models\Product;
+use App\Models\TypeProduct;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Html\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -11,15 +13,31 @@ use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Builder $builder)
+    public function __construct()
     {
+        $this->middleware('permission:create-product', ['only' => ['store']]);
+        $this->middleware('permission:read-product', ['only' => ['index', 'show']]);
+        $this->middleware('permission:edit-product', ['only' => ['update']]);
+        $this->middleware('permission:delete-product', ['only' => ['destroy']]);
+    }
+
+    public function index()
+    {
+        $metadata = [
+            'title' => 'Produk',
+            'description' => 'Data Master',
+            'submenu' => 'product',
+        ];
+
         $products = Product::latest()->get();
+        $categoryProducts = CategoryProduct::all();
+        $typeProducts = TypeProduct::all();
         if( request()->ajax() ) {
             return DataTables::of($products)
                 ->addIndexColumn()
+                ->addColumn('category', function($data) {
+                    return $data->category_product->name;
+                })
                 ->addColumn('aksi', function($data) {
                     return view('components.action-product', compact('data'));
                 })
@@ -27,20 +45,18 @@ class ProductController extends Controller
                 ->make();
         }
        
-        return view('pages.product.product');
+        return view('pages.product.product', [
+            'categoryProducts' => $categoryProducts,
+            'typeProducts' => $typeProducts,
+            'metadata' => $metadata,
+        ]);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
@@ -52,43 +68,54 @@ class ProductController extends Controller
         } else {
             Product::create([
                 'code' => $request->code,
-                'name' => $request->name,
+                'name' => $request->name_product,
                 'packaging' => $request->packaging,
                 'unit' => $request->unit,
-                'category' => $request->category,
+                'type_product_id' => $request->type_of_product,
+                'category_product_id' => $request->category,
             ]);
             return redirect()->back()->with('success', "$request->code");
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(Product $product)
     {
-        return view('pages.product.product-detail', compact('product'));
-    }
+        $metadata = [
+            'title' => 'Produk',
+            'description' => 'Data Master',
+            'submenu' => 'product',
+        ];
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+        $categoryProducts = CategoryProduct::all();
+        $typeProducts = TypeProduct::all();
+        return view('pages.product.product-detail', compact('product', 'categoryProducts', 'typeProducts', 'metadata'));
+    }
+    
     public function edit(Product $product)
     {
-        return view('pages.product.product-edit', compact('product'));
+        $metadata = [
+            'title' => 'Edit Produk',
+            'description' => 'Data Master',
+            'submenu' => 'product',
+        ];
+        $categoryProducts = CategoryProduct::all();
+        $typeProducts = TypeProduct::all();
+        return view('pages.product.product-edit', compact('product', 'categoryProducts', 'typeProducts', 'metadata'));
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, Product $product)
     {
-        $product->update($request->all());
+        $product->update([
+            'code'=> $request->code,
+            'name' => $request->name_product,
+            'packaging' => $request->packaging,
+            'unit' => $request->unit,
+            'type_product_id' => $request->type_of_product,
+            'category_product_id' => $request->category,
+        ]);
         return redirect()->route('product.index')->with('success', "Data produk $product->code berhasil diperbaharui!");
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(Product $product)
     {
         $product->delete();

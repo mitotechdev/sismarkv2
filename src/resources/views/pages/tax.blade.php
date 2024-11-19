@@ -4,27 +4,24 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Konfigurasi Pajak</li>
+              <li class="breadcrumb-item active" aria-current="page">Pajak</li>
             </ol>
         </nav>
 
-        @if ($message = Session::get('error') || $message = Session::get('success') || $message = Session::get('updated') || $message = Session::get('deleted'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    @if ($message = Session::get('success'))
-                        showAlert('Sukses!', 'Data <b>{{ $message }}</b> berhasil ditambahkan!', 'success');
-                    @elseif ($message = Session::get('error'))
-                        showAlert('Gagal!', '{{ $message }}', 'error');
-                    @elseif ($message = Session::get('updated'))
-                        showAlert('Sukses!', ' <b>{{ $message }}</b> berhasil diperbaharui!', 'success');
-                    @elseif ($message = Session::get('deleted'))
-                        showAlert('Sukses!', '<b>{{ $message }}</b> berhasil dihapus!', 'success');
-                    @endif
-                });
-            </script>
+        @if ($message = Session::get("success"))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ $message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @elseif($message = Session::get('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ $message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         @endif
 
         <div class="card shadow-sm rounded">
+            @can('create-tax')
             <div class="card-header d-sm-flex align-items-center justify-content-between">
                 <button type="button" class="btn btn-primary shadow-sm d-flex align-items-center shadow" data-bs-toggle="modal" data-bs-target="#createTax">
                     <i class='bx bx-plus-circle me-1' style="font-size: 20px"></i>
@@ -59,9 +56,8 @@
                         </div>
                     </form>
                 </div>
-
-                <div class="mb-0 fw-bold text-muted mt-sm-0 mt-2">KONFIGURASI PAJAK</div>
             </div>
+            @endcan
             <div class="card-body">
                 <table class="table table-striped align-middle" id="datatable_sismark" style="width: 100%"></table>
             </div>

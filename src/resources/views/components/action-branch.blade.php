@@ -1,3 +1,4 @@
+@can('edit-branch')
 <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editBranch-{{$branch->id}}">
     Edit
 </button>
@@ -47,9 +48,12 @@
         </div>
     </form>
 </div>
+@endcan
 
+@can('delete-branch')
 <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" class="d-inline-block" id="deleteBranch-{{$branch->id}}">
     @csrf
     @method('DELETE')
     <button type="button" class="btn btn-sm btn-danger" onclick="confirmDelete( '{{ $branch->code}}', 'master branch', 'deleteBranch-{{$branch->id}}' )">Hapus</button>
 </form>
+@endcan

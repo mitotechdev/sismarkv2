@@ -19,11 +19,22 @@ use Illuminate\Support\Facades\Validator;
 
 class SalesOrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:create-purchase-order', ['only' => ['store']]);
+        $this->middleware('permission:read-purchase-order', ['only' => ['index', 'show']]);
+        $this->middleware('permission:edit-purchase-order', ['only' => ['update']]);
+        $this->middleware('permission:delete-purchase-order', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
+        $metadata = [
+            'title' => 'Purchase Order',
+            'description' => 'Sales',
+            'submenu' => 'purchase-order',
+        ];
+
         $countPerCategorySegmen = SalesOrder::where('branch_id', Auth::user()->branch_id)
                 ->select('segmen_id', DB::raw('count(*) as total_po'))
                 ->groupBy('segmen_id')
@@ -31,8 +42,11 @@ class SalesOrderController extends Controller
                 ->get();
 
         $customers = Customer::latest()->where('branch_id', Auth::user()->branch_id)->get();
-        $salesOrders = SalesOrder::with('customer', 'approval')->where('branch_id', Auth::user()->branch_id)->latest()->get();
-        $users = User::latest()->where('branch_id', Auth::user()->branch_id)->get();
+        $salesOrders = SalesOrder::with('customer', 'approval')
+                       ->where('branch_id', Auth::user()->branch_id)
+                       ->latest()
+                       ->get();
+        $users = User::latest()->where('branch_id', Auth::user()->branch_id)->where('status', 0)->get();
         $taxes = Tax::latest()->get();
         if ( request()->ajax() ) {
             return DataTables::of($salesOrders)
@@ -49,10 +63,6 @@ class SalesOrderController extends Controller
                 ->addColumn('segmen', function($data) {
                     return $data->segmen->name;
                 })
-                ->addColumn('top', function($data) {
-                    $top_range = $data->order_date->diffInDays(Carbon::parse($data->term_of_payment));;
-                    return $top_range .' Hari';
-                })
                 ->addColumn('status', function($data) {
                     return $data;
                 })
@@ -63,20 +73,15 @@ class SalesOrderController extends Controller
                 ->rawColumns(['aksi'])
                 ->make();
         }
-        return view('pages.sales-order.sales-order', compact('customers', 'taxes', 'users', 'countPerCategorySegmen'));
+        return view('pages.sales-order.sales-order', compact('customers', 'taxes', 'users', 'countPerCategorySegmen', 'metadata'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         $numberSalesOrder = UniqueNumber::generateNumberSalesOrder();
@@ -86,7 +91,6 @@ class SalesOrderController extends Controller
             'name_customer' => 'required',
             'tax_rate' => 'required',
             'order_date' => 'required',
-            'top' => 'required',
         ],
         [
             'no_sales_order.unique' => "Nomor po customer $request->no_sales_order telah terdaftar sebelumnya",
@@ -104,7 +108,6 @@ class SalesOrderController extends Controller
                 'branch_id' => Auth::user()->branch_id,
                 'approval_id' => '1',
                 'order_date' => $request->order_date,
-                'term_of_payment' => $request->top,
                 'created_by' => Auth::user()->name,
                 'sales_id' => $request->sales,
                 'status_payment' => 0,
@@ -113,29 +116,39 @@ class SalesOrderController extends Controller
             return redirect()->route('sales.order.item', $salesOrder->id)->with('success', " Berhasil input! Silahkan input item sales order $numberSalesOrder ");
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(SalesOrder $salesOrder)
     {
-        return view('pages.sales-order.sales-order-detail', compact('salesOrder'));
+        $metadata = [
+            'title' => 'Detail Purchase Order',
+            'description' => 'Sales',
+            'submenu' => 'purchase-order',
+        ];
+        return view('pages.sales-order.sales-order-detail', compact('salesOrder', 'metadata'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(SalesOrder $salesOrder)
     {
-        $customers = Customer::latest()->where('branch_id', Auth::user()->branch_id)->get();
-        $users = User::latest()->where('branch_id', Auth::user()->branch_id)->get();
-        $taxes = Tax::latest()->get();
-        return view('pages.sales-order.sales-order-edit', compact('salesOrder', 'users', 'taxes', 'customers'));
-    }
+        $metadata = [
+            'title' => 'Edit Purchase Order',
+            'description' => 'Sales',
+            'submenu' => 'purchase-order',
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     */
+        if($salesOrder->approval_id != 1) {
+            abort(403, 'Unauthorized action');
+        } else {
+            if(auth()->user()->can('edit-purchase-order') && $salesOrder->branch_id == Auth::user()->branch_id) {
+                $customers = Customer::latest()->where('branch_id', Auth::user()->branch_id)->get();
+                $users = User::latest()->where('branch_id', Auth::user()->branch_id)->where('status', 0)->get();
+                $taxes = Tax::latest()->get();
+                return view('pages.sales-order.sales-order-edit', compact('salesOrder', 'users', 'taxes', 'customers', 'metadata'));
+            } else {
+                abort(403, "You don't have permission");
+            }
+        }
+    }
+    
     public function update(Request $request, SalesOrder $salesOrder)
     {
         $validator = Validator::make($request->all(), [
@@ -143,7 +156,6 @@ class SalesOrderController extends Controller
             'name_customer' => 'required',
             'tax_rate' => 'required',
             'order_date' => 'required',
-            'top' => 'required',
         ]);
 
         if ( $validator->fails() ) {
@@ -155,7 +167,6 @@ class SalesOrderController extends Controller
                 'tax_id' => $request->tax_rate,
                 'approval_id' => '1',
                 'order_date' => $request->order_date,
-                'term_of_payment' => $request->top,
                 'sales_id' => $request->sales,
                 'status_payment' => 0,
             ]);
@@ -163,10 +174,7 @@ class SalesOrderController extends Controller
             return redirect()->route('sales-order.index')->with('success', "Data sales order $salesOrder->no_sales_order berhasil diperbaharui!");
         }
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(SalesOrder $salesOrder)
     {
         $salesOrder->delete();
@@ -176,17 +184,26 @@ class SalesOrderController extends Controller
 
     public function item(SalesOrder $salesOrder)
     {
-        $products = Product::latest()->get();
+        $metadata = [
+            'title' => 'Item Purchase Order',
+            'description' => 'Sales',
+            'submenu' => 'purchase-order',
+        ];
 
-        $salesOrderItems = SalesOrderItem::with('sales_order')
-                            ->where('sales_order_id', $salesOrder->id)
-                            ->get();
-        if ($salesOrderItems->isNotEmpty() && $salesOrder->approval_id == 1) {
-            $openRequest = true;
+        if($salesOrder->approval_id != 1) {
+            abort(403, 'Unauthorized action');
         } else {
-            $openRequest = false;
+            if(auth()->user()->can('read-purchase-order') && $salesOrder->branch_id == Auth::user()->branch_id) {
+                $products = Product::latest()->get();
+                $salesOrderItems = SalesOrderItem::with('sales_order')
+                                    ->where('sales_order_id', $salesOrder->id)
+                                    ->get();
+                return view('pages.sales-order-item', compact('salesOrderItems', 'salesOrder', 'products', 'metadata'));
+            }
+            else {
+                abort(403, "You don't have permission");
+            }
         }
-        return view('pages.sales-order-item', compact('salesOrderItems', 'salesOrder', 'products', 'openRequest'));
     }
 
     public function storeItem(Request $request)
@@ -259,32 +276,9 @@ class SalesOrderController extends Controller
         return redirect()->back()->with('success', "PO $salesOrder->code telah di Approved!");
     }
 
-    public function outstanding()
+    public function api($id)
     {
-        $outstandings = SalesOrder::with('customer', 'sales_order_items')->where('paid', false)->where('approval_id', 3)->latest()->get();
-        if (request()->ajax()) {
-            return DataTables::of($outstandings)
-                ->addIndexColumn()
-                ->addColumn('total', function($data) {
-                    $total = $data->sales_order_items->sum('total_amount');
-                    $ppn = $total * $data->tax->tax;
-                    $grandTotal = $total + $ppn;
-                    return 'Rp '. number_format($grandTotal, 2, ',', '.');
-                })
-                ->addColumn('konsumen', function($data) {
-                    return $data->customer->name;
-                })
-                ->addColumn('status', function($data) {
-                    if($data->paid == false) {
-                        return 'Belum lunas';
-                    }
-                })
-                ->addColumn('aksi', function($data) {
-                    return 'xxxx;';
-                })
-                ->rawColumns(['aksi'])
-                ->make();
-        }
-        return view('pages.outstanding');
+        $data = SalesOrder::with('sales_order_items','tax', 'recap_invoice')->find($id);
+        return response()->json($data);
     }
 }

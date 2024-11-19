@@ -27,4 +27,9 @@ class Branch extends Model
     {
         return $this->hasOne(Target::class, 'branch_id', 'id');
     }
+
+    public function sales_order(): HasOne
+    {
+        return $this->hasOne(SalesOrder::class, 'branch_id');
+    }
 }

@@ -7,26 +7,31 @@ use Illuminate\Http\Request;
 
 class CategoryCustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:create-segment-customer', ['only' => ['store']]);
+        $this->middleware('permission:read-segment-customer', ['only' => ['index']]);
+        $this->middleware('permission:edit-segment-customer', ['only' => ['update']]);
+        $this->middleware('permission:delete-segment-customer', ['only' => ['destroy']]);
+    }
+    
     public function index()
     {
-        $categoryCustomers = CategoryCustomer::latest()->get();
-        return view('pages.category-customer.category-customer', compact('categoryCustomers'));
-    }
+        $metadata = [
+            'title' => 'Segmen Customer',
+            'description' => 'Data Management',
+            'submenu' => 'segment-customer',
+        ];
 
-    /**
-     * Show the form for creating a new resource.
-     */
+        $categoryCustomers = CategoryCustomer::latest()->get();
+        return view('pages.category-customer.category-customer', compact('categoryCustomers', 'metadata'));
+    }
+    
     public function create()
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         CategoryCustomer::create([
@@ -35,26 +40,17 @@ class CategoryCustomerController extends Controller
 
         return redirect()->back()->with('success', "Data $request->name berhasil ditambahkan!");
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(CategoryCustomer $categoryCustomer)
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(CategoryCustomer $categoryCustomer)
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, CategoryCustomer $categoryCustomer)
     {
         $categoryCustomer->update([
@@ -62,10 +58,7 @@ class CategoryCustomerController extends Controller
         ]);
         return redirect()->back()->with("success", "Data berhasil diperbaharui!");
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(CategoryCustomer $categoryCustomer)
     {
         $categoryCustomer->delete();

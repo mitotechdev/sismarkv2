@@ -8,21 +8,7 @@
             </ol>
         </nav>
 
-
         <div class="row g-0 gap-3 mb-3">
-            <div class="col bg-white p-3 shadow-sm rounded">
-                {!! $chartTopSalesProduct->container() !!}
-            </div>
-            
-            <div class="col bg-white p-3 shadow-sm rounded">
-                {!! $chartTopSellingSales->container() !!}
-            </div>
-        </div>
-
-        <div class="row g-0 gap-3 mb-3">
-            <div class="col bg-white py-3 px-sm-0 px-3 shadow-sm rounded">
-                {!! $chartMonthlyRevenue->container() !!}
-            </div>
             <div class="col shadow-sm rounded">
                 <div class="card">
                     <div class="card-header">List Sales</div>
@@ -51,34 +37,10 @@
                 </div>
             </div>
         </div>
-
-        <div class="row g-0 gap-3 mb-3">
-            <div class="col bg-white p-3 shadow-sm rounded">
-                {!! $chartStatsProspect->container() !!}
-            </div>
-
-            <div class="col bg-white p-3 shadow-sm rounded">
-                {!! $chartStatSegmenSales->container() !!}
-            </div>
-        </div>
     </section>
 @endsection
 
 @push('scripts')
-    <script src="{{ $chartStatSegmenSales->cdn() }}"></script>
-    {{ $chartStatSegmenSales->script() }}
-
-    <script src="{{ $chartTopSellingSales->cdn() }}"></script>
-    {{ $chartTopSellingSales->script() }}
-
-    <script src="{{ $chartTopSalesProduct->cdn() }}"></script>
-    {{ $chartTopSalesProduct->script() }}
-
-    <script src="{{ $chartMonthlyRevenue->cdn() }}"></script>
-    {{ $chartMonthlyRevenue->script() }}
-
-    <script src="{{ $chartStatsProspect->cdn() }}"></script>
-    {{ $chartStatsProspect->script() }}
 
     <script>
         $(document).ready(function() {

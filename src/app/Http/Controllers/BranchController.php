@@ -9,11 +9,21 @@ use Yajra\DataTables\Facades\DataTables;
 
 class BranchController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:create-branch', ['only' => ['store']]);
+        $this->middleware('permission:read-branch', ['only' => ['index']]);
+        $this->middleware('permission:edit-branch', ['only' => ['update']]);
+        $this->middleware('permission:delete-branch', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
+        $metadata = [
+            'title' => 'Branches',
+            'description' => 'Data Master',
+            'submenu' => 'branches',
+        ];
         $branches = Branch::select('*')->latest();
         if (request()->ajax()) {
             return DataTables::of($branches)
@@ -24,20 +34,14 @@ class BranchController extends Controller
                     ->rawColumns(['aksi'])
                     ->toJson();
         }
-        return view('pages.branch');
+        return view('pages.branch', compact('metadata'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        abort(404);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -55,29 +59,20 @@ class BranchController extends Controller
                 'address' => $request->address,
                 'pic' => $request->pic,
             ]);
-            return redirect()->back()->with('success', "$request->code");
+            return redirect()->back()->with('success', "Produk $request->code berhasil ditambahkan!");
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(Branch $branch)
     {
-        //
+        abort(404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Branch $branch)
     {
-        //
+        abort(404);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Branch $branch)
     {
         $branch->update([
@@ -89,16 +84,12 @@ class BranchController extends Controller
             'pic' => $request->pic
         ]);
 
-        return redirect()->back()->with('updated', "$request->code");
+        return redirect()->back()->with('success', "$request->code berhasil diperbaharui!");
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Branch $branch)
     {
-        $nameTemp = $branch->code;
         $branch->delete();
-        return redirect()->back()->with('deleted', "$nameTemp");
+        return redirect()->back()->with('success', "$branch->code berhasil dihapus!");
     }
 }

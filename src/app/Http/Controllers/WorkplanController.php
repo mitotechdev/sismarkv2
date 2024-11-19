@@ -17,13 +17,28 @@ use Illuminate\Support\Facades\Validator;
 
 class WorkplanController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:create-realisasi-kerja', ['only' => ['store']]);
+        $this->middleware('permission:read-realisasi-kerja', ['only' => ['index']]);
+        $this->middleware('permission:edit-realisasi-kerja', ['only' => ['editWorkplan','update']]);
+        $this->middleware('permission:delete-realisasi-kerja', ['only' => ['destroy']]);
+    }
     
     public function index()
     {
-        $sales = User::with('branch')->where('branch_id', Auth::user()->branch_id)->latest()->get();
-        // dd($sales);
+        $metadata = [
+            'title' => 'Realisasi Kerja',
+            'description' => 'Marketing',
+            'submenu' => 'realisasi-kerja',
+        ];
+
         $customers = Customer::where('branch_id', Auth::user()->branch_id)->latest()->get();
-        $workplans = Workplan::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        if(auth()->user()->can('admin-view')) {
+            $workplans = Workplan::where('branch_id', Auth::user()->branch_id)->latest()->get();
+        } else {
+            $workplans = Workplan::where('branch_id', Auth::user()->branch_id)->where('sales_id', Auth::user()->id)->latest()->get();
+        }
 
 
         if ( request()->ajax() ) {
@@ -51,22 +66,20 @@ class WorkplanController extends Controller
                     ->rawColumns(['aksi'])
                     ->make();
         }
-        return view('pages.workplan.workplan', compact('sales', 'customers'));
+        return view('pages.workplan.index', compact('customers', 'metadata'));
     }
     
     public function create()
     {
-        
+        abort(404);
     }
     
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'sales' => 'required',
             'name_customer' => 'required',
             'category_customer' => 'required'
         ], [
-            'sales.required' => 'Pilih sales terlebih dahulu',
             'name_customer.required' => 'Masukan customer terlebih dahulu',
             'category_customer.required' => 'Masukan kategori customer terlebih dahulu'
         ]);
@@ -95,7 +108,7 @@ class WorkplanController extends Controller
 
             $workplan = Workplan::create([
                 'code_workplan' => $fullCode,
-                'sales_id' => $request->sales,
+                'sales_id' => Auth::user()->id,
                 'customer_id' => $request->name_customer,
                 'category_customer_id' => $request->category_customer,
                 'branch_id' => Auth::user()->branch_id
@@ -110,16 +123,44 @@ class WorkplanController extends Controller
     
     public function show(Workplan $workplan)
     {
-        $progressWorkplans = ProgressWorkplan::with('workplan')->where('workplan_id', $workplan->id)->latest()->get();
-        return view('pages.workplan.detail-workplan', compact('workplan', 'progressWorkplans'));
-        
+        $metadata = [
+            'title' => 'Data Realisasi Kerja',
+            'description' => 'Marketing',
+            'submenu' => 'realisasi-kerja',
+        ];
+
+        if ((auth()->user()->can('read-realisasi-kerja') && auth()->user()->id == $workplan->sales_id) || auth()->user()->can('admin-view')) {
+            $progressWorkplans = ProgressWorkplan::with('workplan')->where('workplan_id', $workplan->id)->latest()->get();
+            return view('pages.workplan.show', compact('workplan', 'progressWorkplans', 'metadata'));
+        } else {
+            abort(403);
+        }
     }
     
-    public function edit(Workplan $workplan)
+    public function edit(Workplan $workplan) //This for create progress in menu Workplan
     {
-        $marketProgress = MarketProgress::get();
-        $progressWorkplans = ProgressWorkplan::with('workplan')->where('workplan_id', $workplan->id)->latest()->get();
-        return view('pages.workplan.progress.progress', compact('workplan', 'marketProgress', 'progressWorkplans'));
+        $metadata = [
+            'title' => 'Progress Kerja',
+            'description' => 'Marketing',
+            'submenu' => 'realisasi-kerja',
+        ];
+        if(auth()->user()->can('admin-view')) {
+            $marketProgress = MarketProgress::get();
+            $progressWorkplans = ProgressWorkplan::with('workplan')->where('workplan_id', $workplan->id)->latest()->get();
+        } else {
+            if(auth()->user()->id != $workplan->sales_id) {
+                abort(404, "Not Found");
+            } else {
+                $marketProgress = MarketProgress::get();
+                $progressWorkplans = ProgressWorkplan::with('workplan')
+                                     ->where('workplan_id', $workplan->id)
+                                     ->where('user_id', auth()->user()->id)
+                                     ->latest()
+                                     ->get();
+            }
+        }
+        
+        return view('pages.workplan.progress.progress', compact('workplan', 'marketProgress', 'progressWorkplans', 'metadata'));
     }
     
     public function update(Request $request, Workplan $workplan)
@@ -146,25 +187,21 @@ class WorkplanController extends Controller
         $workplan->delete();
         return redirect()->back()->with("success", "Data berhasil di hapus dari database!");
     }
-    
-    public function manageStatusWorkplan(Workplan $workplan)
-    {
-        return view('pages.workplan.progress.progress', compact('workplan'));
-    }
-
-    public function updateStatusWorkplan(Request $request, Workplan $workplan)
-    {
-        $workplan->update([
-            'status' => $request->update_status,
-        ]);
-
-        return redirect()->route('workplan.index')->with('success', 'Status workplan telah diperbaharui!');
-    }
 
     public function editWorkplan(Workplan $workplan)
     {
-        $sales = User::with('branch')->where('branch_id', 1)->get();
-        $customers = Customer::latest()->get();
-        return view('pages.workplan.edit-workplan', compact('workplan', 'sales', 'customers'));
+        $metadata = [
+            'title' => 'Edit Realisasi Kerja',
+            'description' => 'Marketing',
+            'submenu' => 'realisasi-kerja',
+        ];
+
+        if(auth()->user()->id != $workplan->sales_id && !auth()->user()->hasRole('Super Admin')) {
+            abort(403);
+        } else {
+            $sales = User::with('branch')->where('branch_id', 1)->get();
+            $customers = Customer::latest()->get();
+            return view('pages.workplan.edit', compact('workplan', 'sales', 'customers', 'metadata'));
+        }
     }
 }

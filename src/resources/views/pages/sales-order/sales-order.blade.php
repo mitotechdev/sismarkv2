@@ -22,6 +22,7 @@
     </div>
     @endforeach
 
+    @can('create-purchase-order')
     <div class="card mb-3">
         <form action="{{ route('sales-order.store') }}" method="POST" class="needs-validation form-create" novalidate>
             @csrf
@@ -75,12 +76,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="top" class="form-label">Term of Payment (TOP)</label>
-                            <input type="date" class="form-control" name="top" id="top" title="Term of Payment" required>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="card-footer">
@@ -88,6 +83,7 @@
             </div>
         </form>
     </div>
+    @endcan
 
     {{-- Total PO per category segmen --}}
     <div class="container-fluid mb-3">
@@ -152,7 +148,6 @@
             { data: 'konsumen', name: 'konsumen', title: 'Customer', orderable: true, searchable: true},
             { data: 'segmen', name: 'segmen', title: 'Segmen', orderable: true, searchable: true},
             { data: 'no_sales_order', name: 'no_sales_order', title: 'PO', orderable: true, searchable: true},
-            { data: 'top', name: 'top', title: 'TOP', orderable: true, searchable: true},
             { data: 'status', name: 'status', title: 'Status', render: function($data) {
                 const data = JSON.parse($data);
                 return '<span class="badge text-bg-'+ data.approval.tag_front_end +'">'+ data.approval.name +'</span>';

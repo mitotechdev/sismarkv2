@@ -5,7 +5,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
                 <li class="breadcrumb-item"><a href="{{ route('sales-order.index') }}">Purchase Order</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Entry Data</li>
+                <li class="breadcrumb-item active" aria-current="page">Item</li>
             </ol>
         </nav>
     </section>
@@ -38,6 +38,7 @@
 
     <div class="card">
         <div class="card-header d-flex align-items-center justify-content-between">
+            @can('create-item-purchase-order')
             <button type="button" class="btn btn-primary shadow-sm d-flex align-items-center shadow" data-bs-toggle="modal" data-bs-target="#createSalesOrderItems">
                 <i class='bx bx-plus-circle me-1' style="font-size: 20px"></i>
                 <span>Tambah Data</span>
@@ -119,13 +120,16 @@
                     </div>
                 </form>
             </div>
+            @endcan
 
-            @if ($openRequest)
+            @if ($salesOrderItems->isNotEmpty() && $salesOrder->approval_id == 1)
+                @can('submit-item-purchase-order')
                 <form action="{{ route('sales.order.item.submit', $salesOrder->id) }}" method="POST" id="open-request">
                     @csrf
                     @method('PUT')
                     <button type="button" class="btn btn-sm btn-outline-success" onclick="submitItemSalesOrder('open-request')">Open Request</button>
                 </form>
+                @endcan
             @endif
         </div>
         <div class="card-body">
@@ -150,7 +154,9 @@
                                 <td>{{ $item->product->unit }}</td>
                                 <td>Rp {{ number_format($item->price, 2, ',', '.') }}</td>
                                 <td>
+                                    @if($salesOrder->approval_id == 1)
                                     <div class="d-flex align-items-center gap-1">
+                                        @can('edit-item-purchase-order')
                                         <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editSalesOrderItem-{{$item->id}}">
                                             Edit
                                         </button>
@@ -220,13 +226,17 @@
                                                 </div>
                                             </form>
                                         </div>
+                                        @endcan
                                     
+                                        @can('delete-item-purchase-order')
                                         <form action="{{ route('sales.order.item.destroy', $item->id) }}" method="POST" class="needs-validation" novalidate id="delete-item-so-{{$item->id}}">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDeleteItemSalesOrders('delete-item-so-{{$item->id}}')">Hapus</button>
                                         </form>
+                                        @endcan
                                     </div>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -235,6 +245,7 @@
             </div>
         </div>
     </div>
+    
 @endsection
 
 @push('scripts')

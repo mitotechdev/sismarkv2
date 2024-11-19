@@ -5,7 +5,7 @@
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{ route('product.index') }}">Produk</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Edit</li>
+              <li class="breadcrumb-item active" aria-current="page">Show</li>
             </ol>
         </nav>
 
@@ -13,36 +13,42 @@
             <div class="card-header fw-bold">Detail Produk</div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="mb-3">
                             <label for="code_product" class="form-label">Kode Produk</label>
                             <input type="text" class="form-control" id="code_product" disabled readonly value="{{ $product->code }}">
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="name_product" class="form-label">Nama Produk</label>
-                            <input type="text" class="form-control" id="name_product" disabled readonly value="{{ $product->name }}">
+                            <label for="code_product" class="form-label">Nama Produk</label>
+                            <input type="text" class="form-control" id="code_product" disabled readonly value="{{ $product->name }}">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="code_product" class="form-label">Jenis Produk</label>
+                            <input type="text" class="form-control" id="code_product" disabled readonly value="{{ $product->type_product->name ?? 'N/A' }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
                         <div class="mb-3">
                             <label for="packaging" class="form-label">Kemasan</label>
                             <input type="text" class="form-control" id="packaging" disabled readonly value="{{ $product->packaging }}">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="mb-3">
                             <label for="unit" class="form-label">Satuan</label>
                             <input type="text" class="form-control" id="unit" disabled readonly value="{{ $product->unit }}">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="mb-3">
                             <label for="category" class="form-label">Kategori</label>
-                            <input type="text" class="form-control" id="category" disabled readonly value="{{ $product->category }}">
+                            <input type="text" class="form-control" id="category" disabled readonly value="{{ $product->category_product->name ?? 'N/A' }}">
                         </div>
                     </div>
                 </div>

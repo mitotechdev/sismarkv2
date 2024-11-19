@@ -31,10 +31,10 @@ class StatsProspectChart
             $statusCounts['Loss Prospect'] ?? 0
         ];
         return $this->chart->barChart()
-            ->setTitle('Stats Prospect')
-            ->setSubtitle('Statistik prospek berdasarkan status')
-            ->addData('Status', $dataValues)
+            ->setTitle('Statistik Prospect')
+            ->setSubtitle('Statistik jumlah data per status progress')
+            ->addData('Jumlah', $dataValues)
             ->setXAxis($xAxis)
-            ->setHeight(400);
+            ->setHeight(370);
     }
 }

@@ -125,7 +125,7 @@ function confirmRecovery(name, url) {
 function logOut(url) {
     const form = document.getElementById(url);
     Swal.fire({
-        title: 'Log Out?',
+        title: 'Ingin Keluar?',
         html: 'Anda yakin ingin keluar dari program ini!',
         icon: 'warning',
         showCancelButton: true,

@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial, sans-serif';
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .text-center {
@@ -27,7 +27,7 @@ table {
 
 table th, table td {
     border: 0.55px solid rgba(0,0,0,.45);
-    padding: 3px 6px;
+    padding: 11px 6px;
 }
 
 table th, table td {

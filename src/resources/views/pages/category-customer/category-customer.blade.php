@@ -4,10 +4,11 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Kategori Customer</li>
+                <li class="breadcrumb-item active" aria-current="page">Segmen Customer</li>
             </ol>
         </nav>
 
+        @can('create-segment-customer')
         <div class="card mb-3">
             <form action="{{ route('category-customer.store') }}" class="needs-validation form-create" novalidate method="POST">
                 @csrf
@@ -26,6 +27,7 @@
                 </div>
             </form>
         </div>
+        @endcan
 
         {{-- Data Category Customer --}}
         <div class="card">
@@ -53,7 +55,9 @@
                             <td class="text-start">{{ $loop->iteration }}</td>
                             <td>{{ $data->name }}</td>
                             <td>
+                                @canany(['edit-segment-customer', 'delete-segment-customer'])
                                 <div class="d-flex align-items-center gap-2">
+                                    @can('edit-segment-customer')
                                     {{-- Button modal --}}
                                     <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#editCategory-{{ $data->id }}">
                                         <i class='bx bx-edit' ></i>
@@ -84,7 +88,9 @@
                                             </div>
                                         </div>
                                     </form>
+                                    @endcan
 
+                                    @can('delete-segment-customer')
                                     <form action="{{ route('category-customer.destroy', $data->id) }}" method="POST" id="deleteCategory-{{$data->id}}">
                                         @csrf
                                         @method('DELETE')
@@ -92,7 +98,9 @@
                                             <i class='bx bx-trash'></i>
                                         </button>
                                     </form>
+                                    @endcan
                                 </div>
+                                @endcanany
                             </td>
                         </tr>
                         @endforeach

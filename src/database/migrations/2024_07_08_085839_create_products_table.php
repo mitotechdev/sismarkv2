@@ -17,7 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('packaging');
             $table->string('unit');
-            $table->string('category');
+            $table->foreignId('type_product_id')->nullable()->constrained('type_products')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('category_product_id')->constrained('category_products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

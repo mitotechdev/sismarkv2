@@ -4,28 +4,20 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Menu Branches</li>
+              <li class="breadcrumb-item active" aria-current="page">Branches</li>
             </ol>
         </nav>
 
-        @if ($message = Session::get('error') || $message = Session::get('success') || $message = Session::get('updated') || $message = Session::get('deleted'))
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    @if ($message = Session::get('error'))
-                        showAlert('Gagal!', 'Kode branch <b>{{ $message }}</b> telah terdaftar!', 'error');
-                    @elseif ($message = Session::get('success'))
-                        showAlert('Sukses!', 'Kode branch <b>{{ $message }}</b> berhasil ditambahkan!', 'success');
-                    @elseif ($message = Session::get('updated'))
-                        showAlert('Sukses!', 'Branch dengan kode <b>{{ $message }}</b> berhasil diperbaharui!', 'success');
-                    @elseif ($message = Session::get('deleted'))
-                        showAlert('Sukses!', 'Branch dengan kode <b>{{ $message }}</b> berhasil dihapus!', 'success');
-                    @endif
-                });
-            </script>
+        @if ($message = Session::get("success"))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ $message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         @endif
 
         <div class="card shadow-sm rounded">
             <div class="card-header d-flex align-items-center justify-content-between">
+                @can('create-branch')
                 <button type="button" class="btn btn-primary shadow-sm d-flex align-items-center shadow" data-bs-toggle="modal" data-bs-target="#createBranch">
                     <i class='bx bx-plus-circle me-1' style="font-size: 20px"></i>
                     <span>Tambah Data</span>
@@ -76,8 +68,9 @@
                         </div>
                     </form>
                 </div>
+                @endcan
 
-                <div class="mb-0 fw-bold text-muted">DATA MASTER BRANCH</div>
+                <div class="mb-0 fw-bold text-muted">Data Branch</div>
             </div>
             <div class="card-body">
                 <table class="table table-striped align-middle" id="datatable_sismark" style="width: 100%">

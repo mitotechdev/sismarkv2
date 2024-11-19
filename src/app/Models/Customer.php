@@ -43,4 +43,9 @@ class Customer extends Model
     {
         return $this->belongsTo(TypeCustomer::class, 'type_customer_id', 'id');
     }
+
+    public function recap_invoice(): HasMany
+    {
+        return $this->hasMany(RecapInvoice::class, 'customer_id', 'id');
+    }
 }

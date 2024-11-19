@@ -21,7 +21,6 @@ return new class extends Migration
             $table->foreignId('branch_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('approval_id')->nullable()->constrained()->nullOnDelete();
             $table->date('order_date');
-            $table->date('term_of_payment');
             $table->string('created_by');
             $table->foreignId('sales_id')->nullable()->constrained('users')->nullOnDelete();
             $table->tinyInteger('status_payment')->default(0); // 0 = draf, 1 = belum terbit invoice/Uninvoiced, 2 = outstanding, 3 = lunas

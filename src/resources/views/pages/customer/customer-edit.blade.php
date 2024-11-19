@@ -72,12 +72,7 @@
                         <div class="col-md-3">
                             <div class="mb-3">
                                 <label for="branch_system" class="form-label">Branch Sistem</label>
-                                <select name="branch_system" id="branch_system" class="form-select select-box" required>
-                                    <option value="" selected>Pilih branch...</option>
-                                    @foreach ($branches as $branch)
-                                        <option value="{{ $branch->id }}" {{ $customer->branch_id == $branch->id ? "selected" : "" }}>{{ $branch->code }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="text" class="form-control" id="branch_system" readonly disabled title="Branch sistem" value="{{ $customer->branch->name }}">
                             </div>
                         </div>
                         <div class="col-md-3">

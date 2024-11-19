@@ -46,5 +46,15 @@ class SalesOrder extends Model
     public function sales(): BelongsTo
     {
         return $this->belongsTo(User::class, 'sales_id', 'id');
+    }
+    
+    public function recap_invoice(): HasMany
+    {
+        return $this->hasMany(RecapInvoice::class, 'sales_order_id');
     }   
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
 }

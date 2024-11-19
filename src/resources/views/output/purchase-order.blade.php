@@ -25,6 +25,8 @@
                 <th>Date</th>
                 <th>Sales</th>
                 <th>Customer</th>
+                <th>Tax</th>
+                <th>Total Tax</th>
                 <th>Total Invoice</th>
             </tr>
         </thead>
@@ -44,18 +46,20 @@
                 <td class="bg-info bg-opacity-25">{{ $result->order_date->format('d/m/Y') }}</td>
                 <td class="bg-info bg-opacity-25">{{ $result->sales->name }}</td>
                 <td class="bg-info bg-opacity-25">{{ $result->customer->name }}</td>
+                <td class="bg-info bg-opacity-25">{{ $result->tax->name }}</td>
+                <td class="bg-info bg-opacity-25">{{ 'Rp ' . number_format($ppn, 2, ',', '.') }}</td>
                 <td class="bg-info bg-opacity-25">{{ 'Rp ' . number_format($grandTotal, 2, ',', '.') }}</td>
             </tr>
             
             {{-- Header for item list --}}
             <tr>
-                <th colspan="6">List of item purchase order</th>
+                <th colspan="8">List of item purchase order</th>
             </tr>
 
             {{-- Loop through the items --}}
             @foreach ($result['sales_order_items'] as $item)
                 <tr>
-                    <td colspan="3">{{ $item->product->name }}</td>
+                    <td colspan="5">{{ $item->product->name }}</td>
                     <td>{{ number_format($item->qty, 0, ',', '.') . ' (' . $item->product->unit . ')' }}</td>
                     <td>{{ 'Rp ' . number_format($item->price, 2, ',', '.') }}</td>
                     <td>{{ 'Rp ' . number_format($item->total_amount, 2, ',', '.') }}</td>

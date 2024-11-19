@@ -17,4 +17,14 @@ class Controller extends BaseController
         $data = $request->all();
         return $data;
     }
+
+    public function testing()
+    {
+        return view('testing');
+    }
+
+    public function testingResponse(Request $request)
+    {
+        return response()->json($request->all());
+    }
 }

@@ -6,6 +6,7 @@
       
         <ul class="dropdown-menu">
             @if ($data->approval_id == 2)
+                @can('approve-purchase-order')
                 <li class="mb-2 px-2">
                     <form action="{{ route('sales.order.approve', $data->id) }}" method="POST" id="approve-item-{{$data->id}}">
                         @csrf
@@ -15,6 +16,7 @@
                         </button>
                     </form>
                 </li>
+                @endcan
             @elseif ($data->approval_id == 1)
                 <li>
                     <a class="dropdown-item d-flex align-items-center" href="{{ route('sales.order.item', $data->id) }}">
@@ -22,12 +24,16 @@
                         <span>Kelola Item</span>
                     </a>
                 </li>
+                @can('edit-purchase-order')
                 <li>
                     <a class="dropdown-item d-flex align-items-center" href="{{ route('sales-order.edit', $data->id) }}">
                         <i class='bx bxs-edit me-2'></i>
                         <span>Edit</span>
                     </a>
                 </li>
+                @endcan
+
+                @can('delete-purchase-order')
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form action="{{ route('sales-order.destroy', $data->id) }}" method="POST" id="deleteSalesOrder-{{ $data->id }}">
@@ -43,6 +49,7 @@
                         </button>
                     </form>
                 </li>
+                @endcan
             @endif
             @if ($data->approval_id != 1)
             <li>

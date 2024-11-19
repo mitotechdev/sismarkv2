@@ -19,6 +19,11 @@
     /* list-style-type: none; */
     font-family: "Inter", sans-serif;
 }
+
+select, input, button.form-select, textarea {
+    box-shadow: none !important;
+}
+
 a {
     text-decoration: none !important;
 }
@@ -87,7 +92,7 @@ ul {
     color: white;
     display: flex;
     flex-direction: column;
-    z-index: 3;
+    z-index: 6;
 }
 .left_sidebar .brand_logo {
     padding: 1rem;
@@ -145,7 +150,7 @@ ul {
     align-items: center;
     background-color: white;
     box-shadow: 1px 2px 5px 1px #dddddda8;
-    z-index: 2;
+    z-index: 4;
 }
 .wrapper__main_content .wrapper__header .btn__toggle_sidebar {
     appearance: none !important;

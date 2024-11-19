@@ -5,24 +5,28 @@
         </button>
       
         <ul class="dropdown-menu">
+            @can('edit-customer')
             <li>
                 <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.edit', $data->id) }}">
                     <i class='bx bxs-edit me-2'></i>
                     <span>Edit</span>
                 </a>
             </li>
-            <li>
+            @endcan
+            {{-- <li>
                 <a class="dropdown-item d-flex align-items-center" href="">
                     <i class='bx bx-archive me-2'></i>
                     <span>Purchase Orders</span>
                 </a>
-            </li>
+            </li> --}}
+
             <li>
                 <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.show', $data->id) }}">
                     <i class='bx bx-show-alt me-2'></i>
                     <span>Lihat Detail</span>
                 </a>
             </li>
+            @can('delete-customer')
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form action="" id="" method="POST">
@@ -37,6 +41,7 @@
                     </button>
                 </form>
             </li>
+            @endcan
         </ul>
     </div>
 </div>

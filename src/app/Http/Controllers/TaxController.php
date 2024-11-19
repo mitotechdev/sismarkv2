@@ -9,11 +9,22 @@ use Illuminate\Support\Facades\Validator;
 
 class TaxController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:create-tax', ['only' => ['store']]);
+        $this->middleware('permission:read-tax', ['only' => ['index']]);
+        $this->middleware('permission:edit-tax', ['only' => ['update']]);
+        $this->middleware('permission:delete-tax', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
+        $metadata = [
+            'title' => 'Pajax',
+            'description' => 'Data Management',
+            'submenu' => 'taxes',
+        ];
+
         if ( request()->ajax() ) {
             return DataTables::of(Tax::query()->latest())
             ->addIndexColumn()
@@ -24,20 +35,14 @@ class TaxController extends Controller
             ->make();
         }
 
-        return view('pages.tax');
+        return view('pages.tax', compact('metadata'));
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
+    
     public function create()
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     { 
         $validator = Validator::make($request->all(), [
@@ -56,39 +61,26 @@ class TaxController extends Controller
         }
 
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(Tax $tax)
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(Tax $tax)
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, Tax $tax)
     {
         $tax->update($request->all());
-        return redirect()->back()->with('updated', "$request->name");
+        return redirect()->back()->with('success', "$request->name berhasil ditambahkan!");
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(Tax $tax)
     {
-        $tempName = $tax->name;
         $tax->delete();
-        return redirect()->back()->with('deleted', "$tempName");
+        return redirect()->back()->with('success', "$tax->name berhasil dihapus!");
     }
 }

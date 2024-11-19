@@ -14,12 +14,25 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct()
+    {
+        $this->middleware('permission:create-customer', ['only' => ['store']]);
+        $this->middleware('permission:read-customer', ['only' => ['index', 'show']]);
+        $this->middleware('permission:edit-customer', ['only' => ['update']]);
+        $this->middleware('permission:delete-customer', ['only' => ['destroy']]);
+    }
+
     public function index()
     {
-        $users = User::latest()->where('branch_id', Auth::user()->branch_id)->get();
+        $metadata = [
+            'title' => 'Customers',
+            'description' => 'Data Master',
+            'submenu' => 'customers',
+        ];
+        $users = User::latest()
+                       ->where('branch_id', Auth::user()->branch_id)
+                       ->where('status', 0)
+                       ->get();
         $categories = CategoryCustomer::latest()->get();
         $customers = Customer::with('branch', 'user', 'type_customer', 'category_customer')
                     ->where('branch_id', Auth::user()->branch_id)
@@ -49,20 +62,14 @@ class CustomerController extends Controller
                 ->rawColumns(['aksi'])
                 ->make();
         }
-        return view('pages.customer.customer', compact('users', 'categories'));
+        return view('pages.customer.index', compact('users', 'categories', 'metadata'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        abort(404);
     }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -83,7 +90,7 @@ class CustomerController extends Controller
         ]);
 
         if ( $validator->fails() ) {
-            return redirect()->back()->withErrors($validator)->with('error', 'Permintaan tidak dapat diproses, perhatian inputan Anda.')->withInput();
+            return redirect()->back()->withErrors($validator)->withInput();
         } else {
             Customer::create([
                 'name' => $request->name_customer,
@@ -99,32 +106,41 @@ class CustomerController extends Controller
                 'desc_clasification' => $request->desc_clasification,
                 'desc_technical' => $request->desc_technical,
             ]);
-            return redirect()->back()->with("success", "$request->name");
+            return redirect()->back()->with("success", "$request->name berhasil ditambahkan!");
         }
     }
-
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(Customer $customer)
     {
-        return view('pages.customer.customer-detail', compact('customer'));
+        $metadata = [
+            'title' => 'Detail Customer',
+            'description' => 'Data Master',
+            'submenu' => 'customers',
+        ];
+        return view('pages.customer.customer-detail', compact('customer', 'metadata'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(Customer $customer)
     {
-        $categories = CategoryCustomer::latest()->get();
-        $branches = Branch::latest()->get();
-        $users = User::latest()->get();
-        return view('pages.customer.customer-edit', compact('customer', 'branches', 'users', 'categories'));
-    }
+        $metadata = [
+            'title' => 'Edit Customer',
+            'description' => 'Data Master',
+            'submenu' => 'customers',
+        ];
 
-    /**
-     * Update the specified resource in storage.
-     */
+        if($customer->branch_id == Auth::user()->branch_id) {
+            $categories = CategoryCustomer::latest()->get();
+            $branches = Branch::latest()->get();
+            $users = User::latest()
+                        ->where('branch_id', Auth::user()->branch_id)
+                        ->where('status', 0)
+                        ->get();
+            return view('pages.customer.customer-edit', compact('customer', 'branches', 'users', 'categories', 'metadata'));
+        } else {
+            abort(403, "You don't have permission");
+        }
+    }
+    
     public function update(Request $request, Customer $customer)
     {
         $customer->update([
@@ -136,19 +152,16 @@ class CustomerController extends Controller
             'email' => $request->email,
             'phone_number' => $request->phone_number,
             'owner' => $request->name_owner,
-            'branch_id' => $request->branch_system,
             'user_id' => $request->pic_sales,
             'desc_clasification' => $request->desc_clasification,
             'desc_technical' => $request->desc_technical,
         ]);
         return redirect()->route('customer.index')->with('success', "Data $customer->name berhasil diperbaharui!");
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(Customer $customer)
     {
-        //
+        $customer->delete();
+        return redirect()->back()->with('success', "Data $customer->name berhasil dihapus!");
     }
 }

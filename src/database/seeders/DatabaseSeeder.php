@@ -66,10 +66,13 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            CategoryProductSeeder::class,
             MarketProgressSeeder::class,
             BranchSeeder::class,
             CategoryCustomerSeeder::class,
             ProductSeeder::class,
+            PermissionSeeder::class,
+            RoleSeeder::class,
             UserSeeder::class,
             CustomerSeeder::class,
         ]);

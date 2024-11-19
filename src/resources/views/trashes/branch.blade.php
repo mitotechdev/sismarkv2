@@ -4,8 +4,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{ route('trash.branch') }}">Branch</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Data</li>
+              <li class="breadcrumb-item active" aria-current="page">Trash Branch</li>
             </ol>
         </nav>
     </section>

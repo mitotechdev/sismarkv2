@@ -15,6 +15,7 @@
         </div>
     @endif
 
+    @can('create-customer')
     <div class="card mb-3">
         <form action="{{ route('customer.store') }}" method="POST" class="needs-validation form-create" novalidate>
             @csrf
@@ -111,6 +112,7 @@
             </div>
         </form>
     </div>
+    @endcan
 
     <div class="card">
         <div class="card-header fw-bold">Data Customer</div>

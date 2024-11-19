@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -13,54 +14,61 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $superAdmin =User::create([
+            'branch_id' => 1,
+            'name' => 'Super Admin',
+            'username' => 'admin',
+            'gender' => 'Pria',
+            'phone' => '-',
+            'email' => 'it@mit;oindonesia.com',
+            'password' => Hash::make('admin123'),
+            'status' => 1, // define for super admin
+        ]);
+        $superAdmin->assignRole('Super Admin');
+        
         User::create([
-            'employee_id' => '-',
             'branch_id' => 1,
             'name' => 'MITO',
             'username' => 'mito',
             'gender' => 'Pria',
             'phone' => '081234567890',
-            'email' => 'qKoX9@example.com',
+            'email' => 'office@mitoindonesia.com',
             'password' => bcrypt('12345678'),
         ]);
         User::create([
-            'employee_id' => '-',
             'branch_id' => 1,
-            'name' => 'Bayu Buana',
-            'username' => 'bayu',
+            'name' => 'Eko Susilo',
+            'username' => 'ekosusilo',
             'gender' => 'Pria',
             'phone' => '081234567890',
-            'email' => 'bayu@example.com',
+            'email' => 'reiko@mitoindonesia.com',
             'password' => bcrypt('12345678'),
         ]);
         User::create([
-            'employee_id' => '-',
             'branch_id' => 1,
             'name' => 'Yudha Satria',
             'username' => 'yudha',
             'gender' => 'Pria',
             'phone' => '081234567890',
-            'email' => 'yudha@example.com',
+            'email' => 'yudhasatria@mitoindonesia.com',
             'password' => bcrypt('12345678'),
         ]);
         User::create([
-            'employee_id' => '-',
             'branch_id' => 1,
             'name' => 'Jefri Ariandi',
             'username' => 'jefry',
             'gender' => 'Pria',
             'phone' => '081234567890',
-            'email' => 'jefri@example.com',
+            'email' => 'jefri@mitoindonesia.com',
             'password' => bcrypt('12345678'),
         ]);
         User::create([
-            'employee_id' => '-',
             'branch_id' => 1,
             'name' => 'Sintia Lestari',
             'username' => 'sintia',
             'gender' => 'Perempuan',
             'phone' => '081234567890',
-            'email' => 'sintia@example.com',
+            'email' => 'sintia@mitoindonesia.com',
             'password' => bcrypt('12345678'),
         ]);
     }

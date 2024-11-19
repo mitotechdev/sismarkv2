@@ -12,7 +12,10 @@
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "maatwebsite/excel": "^3.1",
         "nadar/quill-delta-parser": "^3.4",
+        "phpoffice/phpspreadsheet": "1.18.0",
+        "spatie/laravel-permission": "^6.10",
         "yajra/laravel-datatables-buttons": "9.0",
         "yajra/laravel-datatables-oracle": "^10.3.1"
     },
